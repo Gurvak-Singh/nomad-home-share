@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,7 @@ const Header = () => {
           </Link>
 
           {/* Search Bar Button (Mobile Collapsed) */}
-          <div className="md:flex-1 md:flex md:justify-center px-4 hidden md:block">
+          <div className="md:flex-1 md:justify-center px-4 hidden md:flex">
             <Button 
               variant="outline" 
               className="shadow-md border-gray-200 rounded-full px-6 py-2 flex items-center gap-2 text-sm font-medium hover:shadow-lg"
@@ -101,6 +100,9 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
                   Help Center
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link to="/contact-us">Contact Us</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
