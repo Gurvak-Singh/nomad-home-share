@@ -7,24 +7,34 @@ import Index from "./pages/Index";
 import PropertyDetail from "./pages/PropertyDetail";
 import NotFound from "./pages/NotFound";
 import Contact from "./pages/Contact";
+import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
+import { AuthProvider } from "./features/auth/AuthContext";
+import { LanguageProvider } from "./features/language/LanguageContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/property/:id" element={<PropertyDetail />} />
-          <Route path="/contact-us" element={<Contact />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </HashRouter>
-    </TooltipProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <HashRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/property/:id" element={<PropertyDetail />} />
+              <Route path="/contact-us" element={<Contact />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/profile" element={<Profile />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </HashRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 

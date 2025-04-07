@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Search, Globe, Menu, User } from 'lucide-react';
 import {
@@ -10,9 +10,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import SearchBar from './SearchBar';
+import LanguageSelector from '@/features/language/LanguageSelector';
+import { useAuth } from '@/features/auth/useAuth';
+import { useLanguage } from '@/features/language/useLanguage';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
@@ -39,11 +51,11 @@ const Header = () => {
               className="shadow-md border-gray-200 rounded-full px-6 py-2 flex items-center gap-2 text-sm font-medium hover:shadow-lg"
               onClick={() => setShowSearch(true)}
             >
-              <span>Anywhere</span>
+              <span>{t('whereToGo')}</span>
               <span className="h-4 border-r border-gray-300"></span>
-              <span>Any week</span>
+              <span>{t('checkIn')}</span>
               <span className="h-4 border-r border-gray-300"></span>
-              <span className="text-gray-600">Add guests</span>
+              <span className="text-gray-600">{t('guests')}</span>
               <div className="bg-airbnb-red text-white rounded-full p-2">
                 <Search className="h-4 w-4" />
               </div>
@@ -58,7 +70,7 @@ const Header = () => {
               onClick={() => setShowSearch(true)}
             >
               <Search className="h-4 w-4 mr-2" />
-              <span>Search</span>
+              <span>{t('search')}</span>
             </Button>
           </div>
 
@@ -69,11 +81,12 @@ const Header = () => {
               size="sm" 
               className="text-sm font-medium rounded-full hidden md:flex"
             >
-              Airbnb your home
+              {t('hostYourHome')}
             </Button>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Globe className="h-5 w-5" />
-            </Button>
+            
+            {/* Language Selector */}
+            <LanguageSelector />
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
@@ -82,28 +95,71 @@ const Header = () => {
                   size="sm"
                 >
                   <Menu className="h-4 w-4" />
-                  <div className="bg-gray-500 text-white rounded-full p-1">
-                    <User className="h-4 w-4" />
-                  </div>
+                  {isAuthenticated && user ? (
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <div className="bg-gray-500 text-white rounded-full p-1">
+                      <User className="h-4 w-4" />
+                    </div>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-60 mt-2">
-                <DropdownMenuItem className="font-medium cursor-pointer">
-                  Sign up
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  Log in
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
-                  Airbnb your home
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  Help Center
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer" asChild>
-                  <Link to="/contact-us">Contact Us</Link>
-                </DropdownMenuItem>
+                {isAuthenticated && user ? (
+                  <>
+                    <div className="p-2 border-b">
+                      <div className="font-medium">{user.name}</div>
+                      <div className="text-sm text-gray-500">{user.email}</div>
+                    </div>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/profile')}>
+                      {t('profile')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      {t('messages')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      {t('wishlist')}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    {user.isHost && (
+                      <DropdownMenuItem className="cursor-pointer">
+                        Host Dashboard
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem className="cursor-pointer">
+                      {t('helpCenter')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" asChild>
+                      <Link to="/contact-us">{t('contactUs')}</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+                      {t('logout')}
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem className="font-medium cursor-pointer" onClick={() => navigate('/auth')}>
+                      {t('signup')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/auth')}>
+                      {t('login')}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer">
+                      {t('hostYourHome')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      {t('helpCenter')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" asChild>
+                      <Link to="/contact-us">{t('contactUs')}</Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
