@@ -59,7 +59,8 @@ const RegisterForm = ({ onSuccess, onLoginClick }: RegisterFormProps) => {
       const userData = {
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&background=random`
       };
       
       const { success, message } = await register(userData);
