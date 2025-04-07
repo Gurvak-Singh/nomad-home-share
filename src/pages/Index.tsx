@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import PropertyGrid from "@/components/PropertyGrid";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // Mock data for property listings
