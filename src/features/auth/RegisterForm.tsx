@@ -56,7 +56,13 @@ const RegisterForm = ({ onSuccess, onLoginClick }: RegisterFormProps) => {
     setIsLoading(true);
 
     try {
-      const success = await register(formData.name, formData.email, formData.password);
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      };
+      
+      const { success, message } = await register(userData);
       
       if (success) {
         toast({
@@ -67,7 +73,7 @@ const RegisterForm = ({ onSuccess, onLoginClick }: RegisterFormProps) => {
       } else {
         toast({
           title: "Registration failed",
-          description: "This email is already registered.",
+          description: message || "This email is already registered.",
           variant: "destructive",
         });
       }
